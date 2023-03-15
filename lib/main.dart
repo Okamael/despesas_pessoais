@@ -1,3 +1,6 @@
+import 'package:despesas_pessoais/components/transaction_form.dart';
+import 'package:despesas_pessoais/components/transaction_list.dart';
+import 'package:despesas_pessoais/components/transaction_user.dart';
 import 'package:despesas_pessoais/models/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -18,20 +21,6 @@ class ExpensesApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  final _transactions = [
-    Transaction(
-      id: 't1',
-      title: 'Novo Tênis de Corrida',
-      value: 310.76,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'Conta de luz',
-      value: 211.30,
-      date: DateTime.now(),
-    ),
-  ];
   MyHomePage({super.key});
 
   @override
@@ -40,69 +29,30 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Despesas Pessoais'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              child: Card(
-                child: Text('Gráfico'),
-                elevation: 5,
-                color: Colors.blue,
-              ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            child: const Card(
+              child: const Text('Gráfico'),
+              elevation: 5,
+              color: Colors.blue,
             ),
-            Column(
-              children: _transactions.map((transaction) {
-                return Card(
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 10),
-                        child: Text(
-                          'R\$ ${transaction.value.toStringAsFixed(2)} ',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.purple,
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.purple,
-                            width: 2,
-                          ),
-                        ),
-                        padding: EdgeInsets.all(10),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            transaction.title,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            DateFormat('d MMM y').format(transaction.date),
-                            style: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                );
-              }).toList(),
-            )
-          ],
-        ),
+          ),
+          const TransactionUser()
+        ],
       ),
     );
   }
+}
+
+class Transacoes {
+  final String title;
+  final double value;
+
+  Transacoes({
+    required this.title,
+    required this.value,
+  });
 }
