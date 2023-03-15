@@ -5,7 +5,8 @@ import 'package:flutter/src/widgets/placeholder.dart';
 class TransactionFormWidget extends StatelessWidget {
   final titleController = TextEditingController();
   final valueController = TextEditingController();
-  TransactionFormWidget({super.key});
+  final void Function(String, double) onSubmit;
+  TransactionFormWidget({super.key, required this.onSubmit});
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +29,9 @@ class TransactionFormWidget extends StatelessWidget {
               children: [
                 TextButton(
                     onPressed: () {
-                      print(
-                          'Titulo:${titleController.text} \n Value:${valueController.text}');
+                      var title = titleController.text;
+                      var value = double.parse(valueController.text) ?? 0.0;
+                      onSubmit(title, value);
                     },
                     child: const Text(
                       'Nova Transação',
