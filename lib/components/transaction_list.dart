@@ -6,17 +6,22 @@ import 'package:intl/intl.dart';
 
 class TransactionListWidget extends StatelessWidget {
   final List<Transaction> transactions;
-  const TransactionListWidget({super.key, required this.transactions});
+  final void Function(String) onRemove;
+  const TransactionListWidget(
+      {super.key, required this.transactions, required this.onRemove});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 300,
       child: transactions.isEmpty
           ? Column(
               children: [
-                Text('Nenhuma Transação Cadastrada!'),
-                SizedBox(
+                const SizedBox(
+                  height: 20,
+                ),
+                const Text('Nenhuma Transação Cadastrada!'),
+                const SizedBox(
                   height: 20,
                 ),
                 Container(
@@ -33,46 +38,41 @@ class TransactionListWidget extends StatelessWidget {
               itemBuilder: (context, index) {
                 final transaction = transactions[index];
                 return Card(
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 10),
-                        child: Text(
-                          'R\$ ${transaction.value.toStringAsFixed(2)} ',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.purple,
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.purple,
-                            width: 2,
-                          ),
-                        ),
-                        padding: EdgeInsets.all(10),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            transaction.title,
+                  elevation: 5,
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.purple,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: FittedBox(
+                          child: Text(
+                            'R\$${transaction.value}',
                             style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
-                          Text(
-                            DateFormat('d MMM y').format(transaction.date),
-                            style: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          )
-                        ],
-                      )
-                    ],
+                        ),
+                      ),
+                    ),
+                    title: Text(
+                      transaction.title,
+                      style: const TextStyle(
+                        fontFamily: 'OpenSans',
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      DateFormat('d MMM y').format(transaction.date),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      color: Colors.red,
+                      onPressed: () => onRemove(transaction.id),
+                    ),
                   ),
                 );
               },

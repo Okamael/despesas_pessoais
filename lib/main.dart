@@ -45,7 +45,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transactions = [
-    Transaction(
+    /* Transaction(
         id: 't0',
         title: 'Conta Antiga',
         value: 400,
@@ -59,7 +59,17 @@ class _MyHomePageState extends State<MyHomePage> {
         id: 't2',
         title: 'Conta Luz',
         value: 389.76,
-        date: DateTime.now().subtract(Duration(days: 4)))
+        date: DateTime.now().subtract(Duration(days: 4))),
+    Transaction(
+        id: 't3',
+        title: 'Cartão de Crédito',
+        value: 100211.30,
+        date: DateTime.now().subtract(Duration(days: 4))),
+    Transaction(
+        id: 't4',
+        title: 'Lanche',
+        value: 11.30,
+        date: DateTime.now().subtract(Duration(days: 4)))*/
   ];
   List<Transaction> get _recentTransactions {
     return _transactions.where((tr) {
@@ -69,12 +79,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  _addTransaction({required String title, required double value}) {
+  _addTransaction(
+      {required String title, required double value, required DateTime date}) {
     final newTransaction = Transaction(
       id: Random().nextDouble().toString(),
       title: title,
       value: value,
-      date: DateTime.now(),
+      date: date,
     );
     setState(() {
       _transactions.add(newTransaction);
@@ -86,10 +97,16 @@ class _MyHomePageState extends State<MyHomePage> {
     showModalBottomSheet(
         context: context,
         builder: (_) {
-          return TransactionFormWidget(onSubmit: (title, value) {
-            _addTransaction(title: title, value: value);
+          return TransactionFormWidget(onSubmit: (title, value, date) {
+            _addTransaction(title: title, value: value, date: date);
           });
         });
+  }
+
+  _removeTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((tr) => tr.id == id);
+    });
   }
 
   @override
@@ -110,7 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ChartWidget(recentTransaction: _recentTransactions),
-            TransactionListWidget(transactions: _transactions),
+            TransactionListWidget(
+                transactions: _transactions, onRemove: _removeTransaction),
           ],
         ),
       ),
