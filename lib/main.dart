@@ -5,6 +5,7 @@ import 'package:despesas_pessoais/components/transaction_form.dart';
 import 'package:despesas_pessoais/components/transaction_list.dart';
 import 'package:despesas_pessoais/models/transaction.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 void main(List<String> args) {
@@ -16,6 +17,7 @@ class ExpensesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     final ThemeData tema = ThemeData();
     return MaterialApp(
         home: MyHomePage(),
@@ -44,6 +46,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _showChart = false;
   final List<Transaction> _transactions = [
     /* Transaction(
         id: 't0',
@@ -68,6 +71,16 @@ class _MyHomePageState extends State<MyHomePage> {
     Transaction(
         id: 't4',
         title: 'Lanche',
+        value: 11.30,
+        date: DateTime.now().subtract(Duration(days: 4))),
+    Transaction(
+        id: 't6',
+        title: 'Lanche bauduco',
+        value: 11.30,
+        date: DateTime.now().subtract(Duration(days: 4))),
+    Transaction(
+        id: 't7',
+        title: 'lary',
         value: 11.30,
         date: DateTime.now().subtract(Duration(days: 4)))*/
   ];
@@ -111,6 +124,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      title: const Text(
+        'Despesas Pessoais',
+      ),
+      actions: [
+        IconButton(
+            onPressed: () => _opentransactionFormModal(context),
+            icon: Icon(Icons.add))
+      ],
+    );
+    final avaliableHeight = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -126,9 +152,32 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ChartWidget(recentTransaction: _recentTransactions),
-            TransactionListWidget(
-                transactions: _transactions, onRemove: _removeTransaction),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Exibir Grafico'),
+                Switch(
+                  value: _showChart,
+                  onChanged: (value) {
+                    setState(() {
+                      print(_showChart);
+                      print(value);
+                      _showChart = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            if (_showChart)
+              Container(
+                  height: avaliableHeight * 0.25,
+                  child: ChartWidget(recentTransaction: _recentTransactions)),
+            if (!_showChart)
+              Container(
+                height: avaliableHeight * 0.75,
+                child: TransactionListWidget(
+                    transactions: _transactions, onRemove: _removeTransaction),
+              ),
           ],
         ),
       ),
