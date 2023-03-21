@@ -48,7 +48,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _showChart = false;
   final List<Transaction> _transactions = [
-    /* Transaction(
+    Transaction(
         id: 't0',
         title: 'Conta Antiga',
         value: 400,
@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         id: 't7',
         title: 'lary',
         value: 11.30,
-        date: DateTime.now().subtract(Duration(days: 4)))*/
+        date: DateTime.now().subtract(Duration(days: 4)))
   ];
   List<Transaction> get _recentTransactions {
     return _transactions.where((tr) {
@@ -124,6 +124,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLandScape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     final appBar = AppBar(
       title: const Text(
         'Despesas Pessoais',
@@ -143,38 +146,47 @@ class _MyHomePageState extends State<MyHomePage> {
           'Despesas Pessoais',
         ),
         actions: [
+          if (isLandScape)
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    _showChart = !_showChart;
+                  });
+                },
+                icon: Icon(_showChart ? Icons.list : Icons.show_chart)),
           IconButton(
               onPressed: () => _opentransactionFormModal(context),
-              icon: Icon(Icons.add))
+              icon: Icon(Icons.add)),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Exibir Grafico'),
-                Switch(
-                  value: _showChart,
-                  onChanged: (value) {
-                    setState(() {
-                      print(_showChart);
-                      print(value);
-                      _showChart = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-            if (_showChart)
+            // if (isLandScape)
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       Text('Exibir Grafico'),
+            //       Switch(
+            //         value: _showChart,
+            //         onChanged: (value) {
+            //           setState(() {
+            //             print(_showChart);
+            //             print(value);
+            //             _showChart = value;
+            //           });
+            //         },
+            //       ),
+            //     ],
+            //   ),
+            if (_showChart || !isLandScape)
               Container(
-                  height: avaliableHeight * 0.25,
+                  height: avaliableHeight * (isLandScape ? 0.8 : 0.3),
                   child: ChartWidget(recentTransaction: _recentTransactions)),
-            if (!_showChart)
+            if (!_showChart || !isLandScape)
               Container(
-                height: avaliableHeight * 0.75,
+                height: avaliableHeight * (isLandScape ? 1 : 0.7),
                 child: TransactionListWidget(
                     transactions: _transactions, onRemove: _removeTransaction),
               ),

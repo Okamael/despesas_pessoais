@@ -20,14 +20,11 @@ class TransactionListWidget extends StatelessWidget {
                 return Column(
                   children: [
                     SizedBox(
-                      height: constrains.maxHeight * 0.05,
+                      height: 20,
                     ),
-                    Container(
-                      height: constrains.maxHeight * 0.3,
-                      child: Text('Nenhuma Transação Cadastrada!'),
-                    ),
+                    Text('Nenhuma Transação Cadastrada!'),
                     SizedBox(
-                      height: constrains.maxHeight * 0.05,
+                      height: 20,
                     ),
                     Container(
                       height: constrains.maxHeight * 0.6,
@@ -75,11 +72,18 @@ class TransactionListWidget extends StatelessWidget {
                     subtitle: Text(
                       DateFormat('d MMM y').format(transaction.date),
                     ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      color: Colors.red,
-                      onPressed: () => onRemove(transaction.id),
-                    ),
+                    trailing: MediaQuery.of(context).size.width > 400
+                        ? TextButton(
+                            onPressed: () => onRemove(transaction.id),
+                            child: Icon(
+                              Icons.delete,
+                            ),
+                          )
+                        : IconButton(
+                            icon: Icon(Icons.delete),
+                            color: Colors.red,
+                            onPressed: () => onRemove(transaction.id),
+                          ),
                   ),
                 );
               },
